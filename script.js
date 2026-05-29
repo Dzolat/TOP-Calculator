@@ -15,9 +15,9 @@ let divideBtn = document.getElementById("divide")
 let equalsBtn = document.getElementById("equals")
 let Result = document.getElementById("result")
 
-let firstNum = 0
+let firstNum = null
 let action = ""
-let secondNum = 0
+let secondNum = null
 let deleteNext = false
 
 function addNum(num)
@@ -28,30 +28,34 @@ function addNum(num)
     deleteNext = false
 }
 
-function evaluate()
-{
-    Result.textContent = ""
-    
-    if (secondNum == 0)
-        return;
+function evaluate() {
+    if (firstNum === null || secondNum === null) return;
 
-    Result.textContent = String(firstNum + secondNum)
-    firstNum = Number(Result.textContent)
-    deleteNext = true
-    secondNum = 0
+    let result = 0;
+
+    if (action == "+") result = firstNum + secondNum;
+    if (action == "-") result = firstNum - secondNum;
+    if (action == "X") result = firstNum * secondNum;
+    if (action == "/") result = firstNum / secondNum;
+
+    Result.textContent = String(result.toFixed(2));
+
+    firstNum = result;
+    secondNum = null;
 }
 
 function setAction(newAction) {
-    action = newAction
-    if (firstNum)
-        secondNum = Number(Result.textContent)
-    else
-        firstNum = Number(Result.textContent)
+    let current = Number(Result.textContent);
 
-    console.log(firstNum)
-    console.log(action)
-    console.log(secondNum)
-    evaluate()
+    if (firstNum === null) {
+        firstNum = current;
+    } else if (action !== "") {
+        secondNum = current;
+        evaluate();
+    }
+
+    action = newAction;
+    deleteNext = true;
 }
 
 equalsBtn.addEventListener("click", () => evaluate())
